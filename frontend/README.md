@@ -239,15 +239,6 @@ Mobile browsers are fully supported with responsive design.
 
 If port 5173 is already in use, Vite will automatically try the next available port. Check your terminal output.
 
-### Dependencies Not Installing
-
-Try deleting `node_modules` and the lock file, then reinstall:
-
-```bash
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
-```
-
 ### Build Errors
 
 Ensure you're using Node.js v18 or higher:
@@ -267,14 +258,6 @@ Check your browser settings to ensure localStorage is enabled and not being clea
 - **Not Medical Advice**: The AI companion provides supportive conversation but is not a replacement for professional mental health care. Users in crisis should contact appropriate emergency services or crisis hotlines.
 
 - **Sample Data**: The application includes sample posts to demonstrate functionality. These will appear on first load.
-
-## Crisis Resources
-
-If you or someone you know is in crisis, please contact:
-
-- **National Suicide Prevention Lifeline**: 988 (US)
-- **Crisis Text Line**: Text HOME to 741741 (US)
-- **International Association for Suicide Prevention**: <https://www.iasp.info/resources/Crisis_Centres/>
 
 ## Contributing
 
