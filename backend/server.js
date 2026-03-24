@@ -14,19 +14,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 const app = express();
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.NODE_ENV !== 'production' ? 'http://localhost:5173' : null,
-].filter(Boolean);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow non-browser requests like curl/postman without origin header.
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('CORS blocked: origin not allowed'));
-  }
-}));
+app.use(cors());
 app.use(express.json());
 app.use(generalLimiter);
 
@@ -114,7 +102,6 @@ app.post('/api/posts/:id/support', authMiddleware, async (req, res) => {
       .single();
 
     if (existing) {
-      // Remove support and decrement count
       await supabase
         .from('post_supports')
         .delete()
@@ -126,19 +113,12 @@ app.post('/api/posts/:id/support', authMiddleware, async (req, res) => {
         .eq('id', id)
         .single();
 
-      const newCount = Math.max(0, (post?.support_count || 0) - 1);
-      await supabase
-        .from('posts')
-        .update({ support_count: newCount })
-        .eq('id', id);
-
       return res.json({
         action: 'removed',
-        support_count: newCount
+        support_count: post.support_count
       });
 
     } else {
-      // Add support and increment count
       await supabase
         .from('post_supports')
         .insert([{ post_id: id, user_anonymous_id }]);
@@ -149,15 +129,9 @@ app.post('/api/posts/:id/support', authMiddleware, async (req, res) => {
         .eq('id', id)
         .single();
 
-      const newCount = (post?.support_count || 0) + 1;
-      await supabase
-        .from('posts')
-        .update({ support_count: newCount })
-        .eq('id', id);
-
       return res.json({
         action: 'added',
-        support_count: newCount
+        support_count: post.support_count
       });
     }
 
@@ -297,6 +271,6 @@ Assistant:
   }
 });
 
-app.listen(3001, () => {
-  console.log('Server running on port 3001');
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`Server running on port ${process.env.PORT || 3001}`);
 });
